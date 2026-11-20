@@ -5,6 +5,7 @@
 import { chromium } from 'playwright';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
@@ -36,6 +37,10 @@ const linkOverrides = {
   '66c3973d0261b81b4ca160f3': ccaArchive,
   '66c3974f58a1603f1d108897': ccaArchive,
 };
+
+// A short hash of an asset file. It changes the file's address whenever the file
+// changes, so browsers fetch the new copy and skip their cached one.
+const version = (name) => createHash('sha1').update(fs.readFileSync(path.join(root, 'assets', name))).digest('hex').slice(0, 8);
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 const num = (n) => String(Math.round(n * 100) / 100);
@@ -241,8 +246,8 @@ for (const page of pages) {
 <meta property="og:image" content="https://robinsonha.cc/assets/share.jpg">
 <link rel="canonical" href="${url}">
 <link rel="icon" href="${prefix}assets/favicon.png">
-<link rel="stylesheet" href="${prefix}assets/site.css">
-<script src="${prefix}assets/site.js" defer></script>
+<link rel="stylesheet" href="${prefix}assets/site.css?v=${version('site.css')}">
+<script src="${prefix}assets/site.js?v=${version('site.js')}" defer></script>
 </head>
 <body style="background:#${bg?.color || '080f0f'}">
 <header>
