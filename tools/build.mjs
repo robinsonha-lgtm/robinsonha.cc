@@ -29,10 +29,12 @@ const linkClasses = {
 };
 
 // Text widgets that link as a whole to a page inside this site.
+// The script opens these links in a pop-up window on the page (data-modal).
+const ccaArchive = { href: 'cca-impact-awards/#purpose-project--little-spark', title: 'Impact Awards, CCA Portal (archived copy)' };
 const linkOverrides = {
-  '66c39800164a3bf8bab1cbf3': 'cca-impact-awards/#purpose-project--little-spark',
-  '66c3973d0261b81b4ca160f3': 'cca-impact-awards/#purpose-project--little-spark',
-  '66c3974f58a1603f1d108897': 'cca-impact-awards/#purpose-project--little-spark',
+  '66c39800164a3bf8bab1cbf3': ccaArchive,
+  '66c3973d0261b81b4ca160f3': ccaArchive,
+  '66c3974f58a1603f1d108897': ccaArchive,
 };
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
@@ -159,7 +161,7 @@ async function renderWidget(w, page, prefix, texts) {
     if (linkOverrides[w._id]) {
       html = html
         .replace(/<\/?a\b[^>]*>/g, '')
-        .replace(/<p([^>]*)>([\s\S]*?)<\/p>/g, `<p$1><a class="link-nav" href="${prefix}${linkOverrides[w._id]}">$2</a></p>`);
+        .replace(/<p([^>]*)>([\s\S]*?)<\/p>/g, `<p$1><a class="link-nav" href="${prefix}${linkOverrides[w._id].href}" data-modal data-modal-title="${esc(linkOverrides[w._id].title)}">$2</a></p>`);
     }
     return `${open('div', 'w text', w)}${html}</div>`;
   }

@@ -83,3 +83,59 @@ a:focus-visible, button:focus-visible { outline: 2px solid #5997fc; outline-offs
   .js [data-anim='load'] { animation: none; opacity: 1; }
   .js [data-anim='scroll'] { opacity: 1; }
 }
+
+/* Pop-up window that shows a linked page inside the current page. */
+.modal-open { overflow: hidden; }
+.browser {
+  width: min(1100px, 92vw);
+  height: min(820px, 88vh);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  background: #080f0f;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+.browser[open] { display: flex; flex-direction: column; animation: fade-in 0.25s ease-out; }
+.browser::backdrop { background: rgba(0, 0, 0, 0.65); }
+.browser-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font: 300 13px/1.2 'rh-sans', -apple-system, system-ui, sans-serif;
+}
+.browser-close {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.browser-close:hover { background: rgba(255, 255, 255, 0.15); }
+.browser-address {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.browser-newtab { flex: none; color: #fff; white-space: nowrap; background: linear-gradient(#fff, #fff) 0 100% / 1px 1px repeat-x; padding-bottom: 1px; }
+.browser-newtab:hover { color: #8a8a8a; }
+.browser iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+@media (prefers-reduced-motion: reduce) { .browser[open] { animation: none; } }

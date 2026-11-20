@@ -41,3 +41,45 @@ if (scrollItems.length) {
   window.addEventListener('resize', request);
   update();
 }
+
+// Links marked data-modal open in a pop-up window on the page. Without this
+// script they work as ordinary links.
+let browserDialog;
+function openBrowser(link) {
+  if (!browserDialog) {
+    browserDialog = document.createElement('dialog');
+    browserDialog.className = 'browser';
+    browserDialog.innerHTML =
+      '<div class="browser-bar">' +
+      '<button type="button" class="browser-close" aria-label="Close">\u00d7</button>' +
+      '<div class="browser-address"></div>' +
+      '<a class="browser-newtab" target="_blank" rel="noopener">Open in new tab</a>' +
+      '</div><iframe></iframe>';
+    document.body.append(browserDialog);
+    browserDialog.querySelector('.browser-close').addEventListener('click', () => browserDialog.close());
+    // A click on the dimmed area outside the window closes it.
+    browserDialog.addEventListener('click', (event) => event.target === browserDialog && browserDialog.close());
+    browserDialog.addEventListener('close', () => {
+      document.documentElement.classList.remove('modal-open');
+      browserDialog.querySelector('iframe').removeAttribute('src');
+    });
+  }
+  const title = link.dataset.modalTitle || link.textContent.trim();
+  const frame = browserDialog.querySelector('iframe');
+  browserDialog.setAttribute('aria-label', title);
+  frame.title = title;
+  frame.src = link.href;
+  browserDialog.querySelector('.browser-address').textContent = link.href.replace(/^https?:\/\//, '');
+  browserDialog.querySelector('.browser-newtab').href = link.href;
+  document.documentElement.classList.add('modal-open');
+  browserDialog.showModal();
+}
+if (window.HTMLDialogElement) {
+  for (const link of document.querySelectorAll('a[data-modal]')) {
+    link.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+      event.preventDefault();
+      openBrowser(link);
+    });
+  }
+}
