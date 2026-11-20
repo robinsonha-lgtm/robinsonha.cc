@@ -1,0 +1,85 @@
+/* The site is a 1024-unit-wide design that scales with the window width.
+   One unit (--u) equals 1/1024 of the window width. */
+@font-face { font-family: 'rh-serif'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/3c91e2d4-1e6f-48d2-8c54-0e9d47ea0d32.otf') format('opentype'); }
+@font-face { font-family: 'rh-serif'; font-weight: 500; font-style: normal; font-display: swap; src: url('fonts/21f1f66e-0893-4f43-8d37-cdbc0dc88e3f.otf') format('opentype'); }
+@font-face { font-family: 'rh-sans'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/0f940333-9202-4841-8b68-c88a2a871166.otf') format('opentype'); }
+@font-face { font-family: 'rh-sans'; font-weight: 300; font-style: normal; font-display: swap; src: url('fonts/e5024a13-b80f-4a32-84a8-c4a3051cbabf.otf') format('opentype'); }
+@font-face { font-family: 'rh-text'; font-weight: 400; font-style: normal; font-display: swap; src: url('fonts/496bc961-fea9-49cf-9cbb-67df51791cda.otf') format('opentype'); }
+@font-face { font-family: 'rh-text'; font-weight: 400; font-style: italic; font-display: swap; src: url('fonts/ff06c675-03e7-4bec-aa04-a12d27a512b8.otf') format('opentype'); }
+
+:root { --u: calc(100vw / 1024); }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: #080f0f;
+  color: #5997fc;
+  font-family: -apple-system, system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+::selection { background-color: #a2a2a2; }
+
+.page { position: relative; width: 100%; height: calc(var(--page-h) * var(--u)); flex: none; overflow: hidden; }
+.w {
+  position: absolute;
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: calc(var(--w) * var(--u));
+  height: calc(var(--h) * var(--u));
+}
+.fixed { position: fixed; white-space: nowrap; }
+
+.text p { margin: 0; letter-spacing: calc(-1.2 * var(--u)); white-space: pre-wrap; overflow-wrap: break-word; }
+.text { height: auto; }
+
+a { text-decoration: none; }
+.link-nav, .link-nav * { color: #fff; }
+.link-nav { padding-bottom: 1px; }
+.link-nav:hover, .link-nav:hover * { color: #8a8a8a !important; }
+.link-nav.current { background: linear-gradient(#fff, #fff) 0 100% / 1px 1px repeat-x; }
+.link-underline, .link-underline * { color: #fff; }
+.link-underline { padding-bottom: 1px; background: linear-gradient(#fff, #fff) 0 100% / 1px 1px repeat-x; }
+.link-underline:hover { background: linear-gradient(to right, #fff 50%, transparent 50%) 0 100% / 2px 1px repeat-x; }
+.link-underline:hover, .link-underline:hover * { color: rgba(255, 255, 255, 0.8) !important; }
+.link-blue, .link-blue * { color: #5997fc; }
+.link-blue { background: linear-gradient(#5997fc, #5997fc) 0 85% / 1px 1px repeat-x; }
+.link-blue:hover { background: linear-gradient(to right, #5997fc 50%, transparent 50%) 0 85% / 2px 1px repeat-x; }
+.link-blue:hover, .link-blue:hover * { color: rgba(89, 151, 252, 0.8) !important; }
+a:focus-visible, button:focus-visible { outline: 2px solid #5997fc; outline-offset: 2px; }
+
+.line::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  border-top: max(1px, calc(var(--weight) * var(--u))) solid currentColor;
+}
+.line-dotted::before { border-top-style: dotted; }
+
+.picture img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.video { overflow: hidden; background: #000; }
+.video video, .video iframe { display: block; width: 100%; height: 100%; object-fit: cover; border: 0; }
+.video .play {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0; padding: 0; border: 0; background: none; cursor: pointer;
+  transition: opacity 0.2s;
+}
+.video .play svg { width: calc(56 * var(--u)); height: calc(56 * var(--u)); min-width: 28px; min-height: 28px; }
+.video.playing .play { opacity: 0; }
+
+/* Elements fade in on page load or as they scroll into view. The script adds
+   the js class, so content stays visible when scripts do not run. */
+.js [data-anim='load'] { opacity: 0; animation: fade-in var(--dur, 2s) ease-out forwards; }
+.js [data-anim='scroll'] { opacity: var(--scroll-opacity, 0); }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .js [data-anim='load'] { animation: none; opacity: 1; }
+  .js [data-anim='scroll'] { opacity: 1; }
+}
