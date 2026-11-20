@@ -28,6 +28,13 @@ const linkClasses = {
   'link-style-d6bcd7ff-6812-40b9-84cd-998823ab526f': 'link-blue',
 };
 
+// Text widgets that link as a whole to a page inside this site.
+const linkOverrides = {
+  '66c39800164a3bf8bab1cbf3': 'cca-impact-awards/#purpose-project--little-spark',
+  '66c3973d0261b81b4ca160f3': 'cca-impact-awards/#purpose-project--little-spark',
+  '66c3974f58a1603f1d108897': 'cca-impact-awards/#purpose-project--little-spark',
+};
+
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 const num = (n) => String(Math.round(n * 100) / 100);
 
@@ -148,7 +155,13 @@ async function renderWidget(w, page, prefix, texts) {
   if (w.type === 'text') {
     const t = texts[w._id];
     if (!t || !t.text) return '';
-    return `${open('div', 'w text', w)}${finishText(t.html, page, prefix)}</div>`;
+    let html = finishText(t.html, page, prefix);
+    if (linkOverrides[w._id]) {
+      html = html
+        .replace(/<\/?a\b[^>]*>/g, '')
+        .replace(/<p([^>]*)>([\s\S]*?)<\/p>/g, `<p$1><a class="link-nav" href="${prefix}${linkOverrides[w._id]}">$2</a></p>`);
+    }
+    return `${open('div', 'w text', w)}${html}</div>`;
   }
   if (w.type === 'shape') {
     if (w.tp === 'line') return `${open('div', `w line line-${w.stroke}`, w, `;--weight:${w.weight};color:#${w.color}`, ' role="presentation"')}</div>`;

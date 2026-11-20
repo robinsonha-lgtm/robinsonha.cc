@@ -9,7 +9,7 @@ const root = path.resolve(import.meta.dirname, '..');
 const args = process.argv.slice(2);
 const full = !args.includes('--viewport');
 const [outDir, width, height, ...pages] = args.filter((a) => !a.startsWith('--'));
-const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp4': 'video/mp4', '.otf': 'font/otf' };
+const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp4': 'video/mp4', '.otf': 'font/otf', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => {
   let p = path.join(root, decodeURIComponent(req.url.split('?')[0]));
   if (!p.startsWith(root)) return res.writeHead(403).end();
